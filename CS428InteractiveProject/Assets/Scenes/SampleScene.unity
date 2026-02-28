@@ -512,7 +512,8 @@ Transform:
 <<<<<<< HEAD
   m_RootOrder: 15
 =======
-
+  m_RootOrder: 17
+>>>>>>> d396de7097c5c69f3b32ffbb99fc6b1fc2538d8d
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &105642232
 PrefabInstance:
@@ -821,7 +822,8 @@ Mesh:
 <<<<<<< HEAD
   m_Name: pb_Mesh29380
 =======
-
+  m_Name: pb_Mesh30774
+>>>>>>> d396de7097c5c69f3b32ffbb99fc6b1fc2538d8d
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
