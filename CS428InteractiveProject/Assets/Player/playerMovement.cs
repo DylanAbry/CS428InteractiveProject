@@ -11,6 +11,12 @@ public class playerMovement : MonoBehaviour
     private Vector3 movement;
     private bool isGrounded;
 
+    private Transform currentLogTransform;
+    private Quaternion lastLogRotation;
+    private float logAngularVelocity;
+    public float flingThreshold = 40f;
+
+
     public Transform cameraTransform;
 
     void Start()
@@ -50,6 +56,7 @@ public class playerMovement : MonoBehaviour
         rb.MovePosition(newPosition);
     }
 
+
     private void OnApplicationFocus(bool focus)
     {
         if (focus)
@@ -64,12 +71,28 @@ public class playerMovement : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("hi");
+        if (collision.gameObject.CompareTag("Log"))
+        {
+            currentLogTransform = collision.transform; 
+            lastLogRotation = currentLogTransform.rotation; 
+            transform.SetParent(currentLogTransform);
+        }
+        
         foreach (ContactPoint contact in collision.contacts)
         {
             Vector3 bounceDirection = -contact.normal;
             rb.AddForce(bounceDirection * 5f, ForceMode.Impulse);
             break; // Use first contact point only
+        }
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        
+        if (collision.gameObject.CompareTag("Log"))
+        {
+            transform.SetParent(null);
+            currentLogTransform = null;
         }
     }
 }

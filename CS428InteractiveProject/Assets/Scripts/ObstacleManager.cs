@@ -5,63 +5,77 @@ using Random = UnityEngine.Random;
 
 public class ObstacleManager : MonoBehaviour
 {
-    /**public float moveDistance = 2.52f;
-    public float moveTime = 0.3f;
-    
-    // Start is called before the first frame update
+    public Transform[] pushers;
+    public float pushDistance = 2f;
+    public float pushSpeed = 6f;
+    public float returnSpeed = 4f;
+
+    private Vector3[] startLocalPos;
+
     void Start()
     {
-        InvokeRepeating("MovePushers", 2f, 2f);
+        startLocalPos = new Vector3[pushers.Length];
+
+        for (int i = 0; i < pushers.Length; i++)
+            startLocalPos[i] = pushers[i].localPosition;
+
+        InvokeRepeating(nameof(ActivatePushers), 2f, 2f);
     }
 
-    public void MovePushers()
+    void ActivatePushers()
     {
-        selectedPushers.Clear();
-        int numPushers = Random.Range(1, 4);
-        int selectedNum;
-        do
+        // pick random number to activate
+        int numToActivate = Random.Range(1, 4);
+
+        List<int> chosen = new List<int>();
+
+        while (chosen.Count < numToActivate)
         {
-            selectedNum = Random.Range(0, pushers.Length);
-            if (!selectedPushers.Contains(pushers[selectedNum]))
-            {
-                selectedPushers.Add(pushers[selectedNum]);
-            }
-            else
-            {
-
-            }
-
-        } while (selectedPushers.Count < numPushers);
-
-        for (int i = 0; i < selectedPushers.Count; i++)
-        {
-            selectedPushers[i].Play("Knockem");
+            int rand = Random.Range(0, pushers.Length);
+            if (!chosen.Contains(rand))
+                chosen.Add(rand);
         }
+
+        StartCoroutine(PushRoutine(chosen));
     }
 
-    IEnumerator MoveAlongZ(float distance, float duration)
+    IEnumerator PushRoutine(List<int> activePushers)
     {
-        Vector3 startPos = transform.localPosition;
-        Vector3 targetPos = startPos + new Vector3(0, 0, distance);
+        float t = 0;
 
-        float elapsed = 0f;
-
-        while (elapsed < duration)
+        // PUSH FORWARD
+        while (t < 1)
         {
-            transform.localPosition = Vector3.Lerp(startPos, targetPos, elapsed / duration);
-            elapsed += Time.deltaTime;
+            t += Time.deltaTime * pushSpeed;
+
+            foreach (int i in activePushers)
+            {
+                Vector3 target = startLocalPos[i] + Vector3.forward * pushDistance;
+                pushers[i].localPosition =
+                    Vector3.Lerp(startLocalPos[i], target, t);
+            }
+
             yield return null;
         }
 
-        transform.localPosition = targetPos;
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.5f);
 
-        while (elapsed < duration)
+        t = 0;
+
+        // RETURN
+        while (t < 1)
         {
-            transform.localPosition = Vector3.Lerp(startPos, targetPos, elapsed / duration);
-            elapsed += Time.deltaTime;
+            t += Time.deltaTime * returnSpeed;
+
+            foreach (int i in activePushers)
+            {
+                Vector3 target = startLocalPos[i];
+                pushers[i].localPosition =
+                    Vector3.Lerp(startLocalPos[i] + Vector3.forward * pushDistance, target, t);
+            }
+
             yield return null;
         }
+    }
 
-    }**/
 }
