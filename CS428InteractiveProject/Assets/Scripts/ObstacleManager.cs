@@ -5,8 +5,9 @@ using Random = UnityEngine.Random;
 
 public class ObstacleManager : MonoBehaviour
 {
-    public Animator[] pushers;
-    public List<Animator> selectedPushers = new List<Animator>();
+    /**public float moveDistance = 2.52f;
+    public float moveTime = 0.3f;
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -37,4 +38,30 @@ public class ObstacleManager : MonoBehaviour
             selectedPushers[i].Play("Knockem");
         }
     }
+
+    IEnumerator MoveAlongZ(float distance, float duration)
+    {
+        Vector3 startPos = transform.localPosition;
+        Vector3 targetPos = startPos + new Vector3(0, 0, distance);
+
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            transform.localPosition = Vector3.Lerp(startPos, targetPos, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localPosition = targetPos;
+        yield return new WaitForSeconds(0.25f);
+
+        while (elapsed < duration)
+        {
+            transform.localPosition = Vector3.Lerp(startPos, targetPos, elapsed / duration);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+    }**/
 }
