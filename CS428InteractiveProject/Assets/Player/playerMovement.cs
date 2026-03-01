@@ -23,7 +23,7 @@ public class playerMovement : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("hi");
+        // Debug.Log("hi");
         rb = GetComponent<Rigidbody>();
     }
 
@@ -80,22 +80,24 @@ public class playerMovement : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Log"))
         {
-            currentLogTransform = collision.transform; 
-            lastLogRotation = currentLogTransform.rotation; 
-            transform.SetParent(currentLogTransform);
-        }
-        
-        foreach (ContactPoint contact in collision.contacts)
-        {
-            Vector3 bounceDirection = -contact.normal;
-            rb.AddForce(bounceDirection * 5f, ForceMode.Impulse);
-            break; // Use first contact point only
+            currentLogTransform = collision.transform;
+            lastLogRotation = currentLogTransform.rotation;
+            // transform.SetParent(currentLogTransform);
+            foreach (ContactPoint contact in collision.contacts)
+            {
+                if(collision.gameObject.name == "Cylinder"){    
+                    Debug.Log("contact bounces");
+                    Vector3 bounceDirection = contact.normal;
+                    rb.AddForce(bounceDirection * 20f, ForceMode.Impulse);
+                    // break; // Use first contact point only
+                }
+            }
         }
     }
 
     void OnCollisionExit(Collision collision)
     {
-        
+
         if (collision.gameObject.CompareTag("Log"))
         {
             transform.SetParent(null);
