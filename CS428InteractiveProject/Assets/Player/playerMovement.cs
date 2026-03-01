@@ -46,10 +46,26 @@ public class playerMovement : MonoBehaviour
 
         movement = (forward * moveZ + right * moveX).normalized * moveSpeed;
 
+        if (movement != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(movement);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                10f * Time.deltaTime
+            );
+        }
+
         // Jump input
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
+            playerAnim.SetTrigger("Jump");
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+        }
+
+        if (!isGrounded)
+        {
+            playerAnim.SetTrigger("Jump");
         }
     }
 
@@ -57,6 +73,9 @@ public class playerMovement : MonoBehaviour
     {
         // Ground check
         isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + 0.1f);
+        playerAnim.SetBool("isGrounded", isGrounded);
+
+        rb.angularVelocity = Vector3.zero;
 
         // Move using physics
         Vector3 newPosition = rb.position + movement * Time.fixedDeltaTime;
