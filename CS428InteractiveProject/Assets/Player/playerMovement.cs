@@ -3,6 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class playerMovement : MonoBehaviour
 {
+    public Animator playerAnim;
+
     public float moveSpeed = 7f;
     public float jumpForce = 25f;          // Added jump force
     public float groundCheckDistance = 1f; // Ground check distance
@@ -30,14 +32,19 @@ public class playerMovement : MonoBehaviour
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
+        // Animation control
+        playerAnim.SetBool("isRunning", Mathf.Abs(moveZ) > 0.1f || Mathf.Abs(moveX) > 0.1f);
+
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
+
+        forward.y = 0;
+        right.y = 0;
 
         forward.Normalize();
         right.Normalize();
 
         movement = (forward * moveZ + right * moveX).normalized * moveSpeed;
-        movement.y = 0;
 
         // Jump input
         if (Input.GetButtonDown("Jump") && isGrounded)

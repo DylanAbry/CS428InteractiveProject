@@ -10,6 +10,7 @@ public class ObstacleManager : MonoBehaviour
     public float pushSpeed = 6f;
     public float returnSpeed = 4f;
 
+   
     private Vector3[] startLocalPos;
 
     void Start()
