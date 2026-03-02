@@ -7,6 +7,7 @@ TagManager:
   - PusherSpace
   - Pusher
   - Log
+  - Lava
   layers:
   - Default
   - TransparentFX

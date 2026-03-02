@@ -20,10 +20,10 @@ public class playerMovement : MonoBehaviour
 
 
     public Transform cameraTransform;
+    public Transform playerSpawn;
 
     void Start()
     {
-        // Debug.Log("hi");
         rb = GetComponent<Rigidbody>();
     }
 
@@ -34,6 +34,10 @@ public class playerMovement : MonoBehaviour
 
         // Animation control
         playerAnim.SetBool("isRunning", Mathf.Abs(moveZ) > 0.1f || Mathf.Abs(moveX) > 0.1f);
+
+        //Ground check
+        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + 0.1f);
+        playerAnim.SetBool("isGrounded", isGrounded);
 
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
@@ -46,6 +50,7 @@ public class playerMovement : MonoBehaviour
 
         movement = (forward * moveZ + right * moveX).normalized * moveSpeed;
 
+        // Adjust camera if needed
         if (movement != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(movement);
@@ -62,19 +67,10 @@ public class playerMovement : MonoBehaviour
             playerAnim.SetTrigger("Jump");
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
         }
-
-        if (!isGrounded)
-        {
-            playerAnim.SetTrigger("Jump");
-        }
     }
 
     void FixedUpdate()
     {
-        // Ground check
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + 0.1f);
-        playerAnim.SetBool("isGrounded", isGrounded);
-
         rb.angularVelocity = Vector3.zero;
 
         // Move using physics
@@ -111,6 +107,11 @@ public class playerMovement : MonoBehaviour
                     // break; // Use first contact point only
                 }
             }
+        }
+
+        if (collision.gameObject.CompareTag("Lava"))
+        {
+            this.gameObject.transform.position = playerSpawn.position;
         }
     }
 
