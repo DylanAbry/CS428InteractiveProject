@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
 public class playerMovement : MonoBehaviour
@@ -6,21 +7,41 @@ public class playerMovement : MonoBehaviour
     public Animator playerAnim;
 
     public float moveSpeed = 7f;
-    public float jumpForce = 25f;          // Added jump force
-    public float groundCheckDistance = 1f; // Ground check distance
+    public float jumpForce = 25f;
+    public float groundCheckDistance = 1f;
 
     private Rigidbody rb;
     private Vector3 movement;
     private bool isGrounded;
 
-    private Transform currentLogTransform;
-    private Quaternion lastLogRotation;
-    private float logAngularVelocity;
-    public float flingThreshold = 40f;
-
-
     public Transform cameraTransform;
     public Transform playerSpawn;
+
+    Transform currentLogTransform;
+    Quaternion lastLogRotation;
+
+    private PlayerControllerActions controls;
+    private Vector2 moveInput;
+
+    void Awake()
+    {
+        controls = new PlayerControllerActions();
+
+        controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
+
+        controls.Player.Jump.performed += ctx =>
+        {
+            if (isGrounded)
+            {
+                playerAnim.SetTrigger("Jump");
+                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            }
+        };
+    }
+
+    private void OnEnable() => controls.Enable();
+    private void OnDisable() => controls.Disable();
 
     void Start()
     {
@@ -29,16 +50,14 @@ public class playerMovement : MonoBehaviour
 
     void Update()
     {
-        float moveX = Input.GetAxis("Horizontal");
-        float moveZ = Input.GetAxis("Vertical");
-
-        // Animation control
-        playerAnim.SetBool("isRunning", Mathf.Abs(moveZ) > 0.1f || Mathf.Abs(moveX) > 0.1f);
-
-        //Ground check
+        // Ground check
         isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + 0.1f);
         playerAnim.SetBool("isGrounded", isGrounded);
 
+        // Animation
+        playerAnim.SetBool("isRunning", moveInput.magnitude > 0.1f);
+
+        // Camera-relative movement
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
 
@@ -48,9 +67,9 @@ public class playerMovement : MonoBehaviour
         forward.Normalize();
         right.Normalize();
 
-        movement = (forward * moveZ + right * moveX).normalized * moveSpeed;
+        movement = (forward * moveInput.y + right * moveInput.x).normalized * moveSpeed;
 
-        // Adjust camera if needed
+        // Rotate player toward movement direction
         if (movement != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(movement);
@@ -60,22 +79,12 @@ public class playerMovement : MonoBehaviour
                 10f * Time.deltaTime
             );
         }
-
-        // Jump input
-        if (Input.GetButtonDown("Jump") && isGrounded)
-        {
-            playerAnim.SetTrigger("Jump");
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-        }
     }
 
     void FixedUpdate()
     {
         rb.angularVelocity = Vector3.zero;
-
-        // Move using physics
-        Vector3 newPosition = rb.position + movement * Time.fixedDeltaTime;
-        rb.MovePosition(newPosition);
+        rb.MovePosition(rb.position + movement * Time.fixedDeltaTime);
     }
 
 
