@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class ConeManager : MonoBehaviour
 {
-    public GameObject blueCones;
-    public GameObject yellowCones;
+    public GameObject[] blueCones;
+    public GameObject[] yellowCones;
 
     public enum ConeColors
     {
@@ -18,8 +18,16 @@ public class ConeManager : MonoBehaviour
     void Start()
     {
         colorState = ConeColors.Blue;
-        blueCones.SetActive(true);
-        yellowCones.SetActive(false);
+        foreach (GameObject cone in blueCones)
+        {
+            cone.GetComponent<MeshRenderer>().enabled = true;
+            cone.GetComponent<MeshCollider>().enabled = true;
+        }
+        foreach (GameObject cone in yellowCones)
+        {
+            cone.GetComponent<MeshRenderer>().enabled = false;
+            cone.GetComponent<MeshCollider>().enabled = false;
+        }
         InvokeRepeating("ChangeColors", 1f, 3f);
     }
 
@@ -27,14 +35,30 @@ public class ConeManager : MonoBehaviour
     {
         if (colorState == ConeColors.Blue)
         {
-            blueCones.SetActive(false);
-            yellowCones.SetActive(true);
+            foreach (GameObject cone in blueCones)
+            {
+                cone.GetComponent<MeshRenderer>().enabled = false;
+                cone.GetComponent<MeshCollider>().enabled = false;
+            }
+            foreach (GameObject cone in yellowCones)
+            {
+                cone.GetComponent<MeshRenderer>().enabled = true;
+                cone.GetComponent<MeshCollider>().enabled = true;
+            }
             colorState = ConeColors.Yellow;        
         }
         else if (colorState == ConeColors.Yellow)
         {
-            blueCones.SetActive(true);
-            yellowCones.SetActive(false);
+            foreach (GameObject cone in blueCones)
+            {
+                cone.GetComponent<MeshRenderer>().enabled = true;
+                cone.GetComponent<MeshCollider>().enabled = true;
+            }
+            foreach (GameObject cone in yellowCones)
+            {
+                cone.GetComponent<MeshRenderer>().enabled = false;
+                cone.GetComponent<MeshCollider>().enabled = false;
+            }
             colorState = ConeColors.Blue;
         }
         else
