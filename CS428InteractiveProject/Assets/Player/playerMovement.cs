@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class playerMovement : MonoBehaviour
 {
+    public UIManager uiScript;
     public Animator playerAnim;
 
     public float moveSpeed = 7f;
@@ -29,6 +30,8 @@ public class playerMovement : MonoBehaviour
 
         controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
+
+        controls.Player.Pause.performed += ctx => uiScript.PauseManager();
 
         controls.Player.Jump.performed += ctx =>
         {

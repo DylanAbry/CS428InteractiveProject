@@ -12,23 +12,22 @@ public class UIManager : MonoBehaviour
         pauseScreen.SetActive(false);
 
     }
-
-    void Update()
+    
+    public void PauseManager()
     {
-        if (!pauseScreen.activeInHierarchy)
+        if (pauseScreen.activeInHierarchy)
         {
-            if (Input.GetKeyDown(KeyCode.Escape)) 
-            {
-                pauseScreen.SetActive(true);
-                Time.timeScale = 0f;
-            }
+            pauseScreen.SetActive(false);
+            Time.timeScale = 1f;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
-        
-    }
-
-    public void ContinuePlaying ()
-    {
-        pauseScreen.SetActive(false);
-        Time.timeScale = 1f;
+        else
+        {
+            pauseScreen.SetActive(true);
+            Time.timeScale = 0f;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 }
