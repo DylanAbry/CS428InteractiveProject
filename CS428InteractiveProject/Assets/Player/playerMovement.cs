@@ -4,25 +4,31 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(Rigidbody))]
 public class playerMovement : MonoBehaviour
 {
+    [Header("References")]
     public UIManager uiScript;
     public Animator playerAnim;
-
-    public float moveSpeed = 7f;
-    public float jumpForce = 25f;
-    public float groundCheckDistance = 1f;
-
-    private Rigidbody rb;
-    private Vector3 movement;
-    private bool isGrounded;
-
+    public Animator pitDoor;
     public Transform cameraTransform;
     public Transform playerSpawn;
 
-    Transform currentLogTransform;
-    Quaternion lastLogRotation;
+    [Header("Movement")]
+    public float moveSpeed = 7f;
+    public float jumpForce = 25f;
 
-    private PlayerControllerActions controls;
-    private Vector2 moveInput;
+    [Header("Ground Check")]
+    public float groundCheckDistance = 1.1f;
+    public LayerMask groundLayer;
+
+    Rigidbody rb;
+    Vector3 movement;
+
+    bool isGrounded;
+    bool jumpLocked;
+
+    PlayerControllerActions controls;
+    Vector2 moveInput;
+
+    Transform currentLogTransform;
 
     void Awake()
     {
@@ -33,18 +39,11 @@ public class playerMovement : MonoBehaviour
 
         controls.Player.Pause.performed += ctx => uiScript.PauseManager();
 
-        controls.Player.Jump.performed += ctx =>
-        {
-            if (isGrounded)
-            {
-                playerAnim.SetTrigger("Jump");
-                rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            }
-        };
+        controls.Player.Jump.performed += ctx => TryJump();
     }
 
-    private void OnEnable() => controls.Enable();
-    private void OnDisable() => controls.Disable();
+    void OnEnable() => controls.Enable();
+    void OnDisable() => controls.Disable();
 
     void Start()
     {
@@ -53,14 +52,30 @@ public class playerMovement : MonoBehaviour
 
     void Update()
     {
-        // Ground check
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, groundCheckDistance + 0.1f);
-        playerAnim.SetBool("isGrounded", isGrounded);
+        HandleMovement();
+        HandleAnimation();
+    }
 
-        // Animation
-        playerAnim.SetBool("isRunning", moveInput.magnitude > 0.1f);
+    void FixedUpdate()
+    {
+        rb.angularVelocity = Vector3.zero;
+        rb.MovePosition(rb.position + movement * Time.fixedDeltaTime);
+    }
 
-        // Camera-relative movement
+    void TryJump()
+    {
+        if (!isGrounded || jumpLocked)
+            return;
+
+        isGrounded = false;
+        jumpLocked = true;
+
+        playerAnim.SetTrigger("Jump");
+        rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+    }
+
+    void HandleMovement()
+    {
         Vector3 forward = cameraTransform.forward;
         Vector3 right = cameraTransform.right;
 
@@ -72,10 +87,10 @@ public class playerMovement : MonoBehaviour
 
         movement = (forward * moveInput.y + right * moveInput.x).normalized * moveSpeed;
 
-        // Rotate player toward movement direction
         if (movement != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(movement);
+
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 targetRotation,
@@ -84,56 +99,76 @@ public class playerMovement : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
+    void HandleAnimation()
     {
-        rb.angularVelocity = Vector3.zero;
-        rb.MovePosition(rb.position + movement * Time.fixedDeltaTime);
+        playerAnim.SetBool("isRunning", moveInput.magnitude > 0.1f);
     }
 
-
-    private void OnApplicationFocus(bool focus)
+    void OnApplicationFocus(bool focus)
     {
-        if (focus)
-        {
-            Cursor.lockState = CursorLockMode.Locked;
-        }
-        else
-        {
-            Cursor.lockState = CursorLockMode.None;
-        }
+        Cursor.lockState = focus ? CursorLockMode.Locked : CursorLockMode.None;
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Log"))
+        if (collision.gameObject.tag == "Log")
         {
             currentLogTransform = collision.transform;
-            lastLogRotation = currentLogTransform.rotation;
-            // transform.SetParent(currentLogTransform);
+
             foreach (ContactPoint contact in collision.contacts)
             {
-                if(collision.gameObject.name == "Cylinder"){    
-                    Debug.Log("contact bounces");
+                if (collision.gameObject.name == "Cylinder")
+                {
                     Vector3 bounceDirection = contact.normal;
                     rb.AddForce(bounceDirection * 20f, ForceMode.Impulse);
-                    // break; // Use first contact point only
                 }
             }
         }
 
-        if (collision.gameObject.CompareTag("Lava"))
+        if (collision.gameObject.tag == "Key")
         {
-            this.gameObject.transform.position = playerSpawn.position;
+            collision.gameObject.SetActive(false);
+            pitDoor.Play("OpenDoor");
+        }
+    }
+
+    void OnCollisionStay(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true;
+            jumpLocked = false;
+            playerAnim.SetBool("isGrounded", true);
         }
     }
 
     void OnCollisionExit(Collision collision)
     {
-
-        if (collision.gameObject.CompareTag("Log"))
+        if (collision.gameObject.tag == "Log")
         {
-            transform.SetParent(null);
             currentLogTransform = null;
+        }
+
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = false;
+            playerAnim.SetBool("isGrounded", false);
+        }
+    }
+
+    void OnTriggerEnter(Collider collider)
+    {
+        if (collider.gameObject.tag == "Lava")
+        {
+            
+            rb.velocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+
+            
+            transform.position = playerSpawn.position;
+
+            
+            transform.rotation = playerSpawn.rotation;
         }
     }
 }

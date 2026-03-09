@@ -8,6 +8,8 @@ TagManager:
   - Pusher
   - Log
   - Lava
+  - Ground
+  - Key
   layers:
   - Default
   - TransparentFX
@@ -17,9 +19,9 @@ TagManager:
   - UI
   - PusherSpace
   - Pusher
-  - 
-  - 
-  - 
+  - Ball
+  - BallPitBlocker
+  - Ground
   - 
   - 
   - 
