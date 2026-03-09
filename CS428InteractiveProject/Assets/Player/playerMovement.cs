@@ -1,4 +1,6 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody))]
@@ -10,6 +12,9 @@ public class playerMovement : MonoBehaviour
     public Animator pitDoor;
     public Transform cameraTransform;
     public Transform playerSpawn;
+
+    public GameObject winText;
+    public GameObject startText;
 
     [Header("Movement")]
     public float moveSpeed = 7f;
@@ -30,16 +35,32 @@ public class playerMovement : MonoBehaviour
 
     Transform currentLogTransform;
 
+    bool inputEnabled = false;
+
     void Awake()
     {
         controls = new PlayerControllerActions();
 
-        controls.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        controls.Player.Move.performed += ctx =>
+        {
+            if (inputEnabled)
+                moveInput = ctx.ReadValue<Vector2>();
+        };
+
         controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
         controls.Player.Pause.performed += ctx => uiScript.PauseManager();
 
-        controls.Player.Jump.performed += ctx => TryJump();
+        controls.Player.Jump.performed += ctx =>
+        {
+            if (!inputEnabled)
+            {
+                Begin();
+                return;
+            }
+
+            TryJump();
+        };
     }
 
     void OnEnable() => controls.Enable();
@@ -48,6 +69,7 @@ public class playerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        winText.SetActive(false);
     }
 
     void Update()
@@ -169,6 +191,36 @@ public class playerMovement : MonoBehaviour
 
             
             transform.rotation = playerSpawn.rotation;
+        }
+
+        if (collider.gameObject.tag == "Pool")
+        {
+            StartCoroutine(WinSequence());
+        }
+    }
+
+    private IEnumerator WinSequence()
+    {
+        winText.SetActive(true);
+        yield return new WaitForSeconds(3f);
+        winText.SetActive(false);
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+
+        transform.position = playerSpawn.position;
+
+
+        transform.rotation = playerSpawn.rotation;
+    }
+
+    void Begin()
+    {
+        if (!inputEnabled)
+        {
+            inputEnabled = true;
+            startText.SetActive(false);
+            return;
         }
     }
 }

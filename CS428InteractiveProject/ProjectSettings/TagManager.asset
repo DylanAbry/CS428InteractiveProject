@@ -10,6 +10,7 @@ TagManager:
   - Lava
   - Ground
   - Key
+  - Pool
   layers:
   - Default
   - TransparentFX
