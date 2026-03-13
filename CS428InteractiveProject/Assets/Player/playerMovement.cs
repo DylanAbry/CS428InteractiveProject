@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Rigidbody))]
 public class playerMovement : MonoBehaviour
@@ -49,16 +50,18 @@ public class playerMovement : MonoBehaviour
 
         controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-        controls.Player.Pause.performed += ctx => uiScript.PauseManager();
+        if (SceneManager.GetActiveScene().name == "SenseiScene") controls.Player.Pause.performed += ctx => uiScript.PauseManager();
 
         controls.Player.Jump.performed += ctx =>
         {
-            if (!inputEnabled)
+            if (SceneManager.GetActiveScene().name == "SenseiScene")
             {
-                Begin();
-                return;
+                if (!inputEnabled)
+                {
+                    Begin();
+                    return;
+                }
             }
-
             TryJump();
         };
     }
@@ -69,7 +72,11 @@ public class playerMovement : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        winText.SetActive(false);
+
+        if (SceneManager.GetActiveScene().name != "SenseiScene")
+        {
+            inputEnabled = true;
+        }
     }
 
     void Update()
