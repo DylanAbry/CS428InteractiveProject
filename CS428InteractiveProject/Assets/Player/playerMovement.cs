@@ -12,7 +12,12 @@ public class playerMovement : MonoBehaviour
     public Animator playerAnim;
     public Animator pitDoor;
     public Transform cameraTransform;
-    public Transform playerSpawn;
+
+    public Transform[] playerSpawns;
+    public Transform recentCheckpoint;
+    int spawnCounter;
+    public GameObject[] checkpointCollisions;
+    public GameObject recentCollision;
 
     public GameObject winText;
     public GameObject startText;
@@ -37,6 +42,15 @@ public class playerMovement : MonoBehaviour
     Transform currentLogTransform;
 
     bool inputEnabled = false;
+
+
+
+    Transform currentPlatform;
+    Vector3 lastPlatformPos;
+    Quaternion lastPlatformRot;
+
+    Vector3 platformDelta = Vector3.zero;
+
 
     void Awake()
     {
@@ -77,10 +91,35 @@ public class playerMovement : MonoBehaviour
         {
             inputEnabled = true;
         }
+
+        spawnCounter = 0;
+        recentCheckpoint = playerSpawns[spawnCounter];
+        recentCollision = checkpointCollisions[spawnCounter];
     }
 
     void Update()
     {
+        if (currentPlatform != null)
+        {
+            Vector3 deltaPos = currentPlatform.position - lastPlatformPos;
+            Quaternion deltaRot = currentPlatform.rotation * Quaternion.Inverse(lastPlatformRot);
+
+            Vector3 platformCenter = currentPlatform.position;
+            Vector3 offset = rb.position - platformCenter;
+
+            offset = deltaRot * offset;
+            offset = offset.normalized * offset.magnitude;
+
+            platformDelta = (platformCenter + offset + deltaPos) - rb.position;
+
+            lastPlatformPos = currentPlatform.position;
+            lastPlatformRot = currentPlatform.rotation;
+        }
+        else
+        {
+            platformDelta = Vector3.zero;
+        }
+
         HandleMovement();
         HandleAnimation();
     }
@@ -88,7 +127,10 @@ public class playerMovement : MonoBehaviour
     void FixedUpdate()
     {
         rb.angularVelocity = Vector3.zero;
-        rb.MovePosition(rb.position + movement * Time.fixedDeltaTime);
+
+        Vector3 finalMove = movement + platformDelta / Time.fixedDeltaTime;
+
+        rb.MovePosition(rb.position + finalMove * Time.fixedDeltaTime);
     }
 
     void TryJump()
@@ -140,18 +182,11 @@ public class playerMovement : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Log")
+        if (collision.gameObject.CompareTag("Log"))
         {
-            currentLogTransform = collision.transform;
-
-            foreach (ContactPoint contact in collision.contacts)
-            {
-                if (collision.gameObject.name == "Cylinder")
-                {
-                    Vector3 bounceDirection = contact.normal;
-                    rb.AddForce(bounceDirection * 20f, ForceMode.Impulse);
-                }
-            }
+            currentPlatform = collision.transform;
+            lastPlatformPos = currentPlatform.position;
+            lastPlatformRot = currentPlatform.rotation;
         }
 
         if (collision.gameObject.tag == "Key")
@@ -159,11 +194,24 @@ public class playerMovement : MonoBehaviour
             collision.gameObject.SetActive(false);
             pitDoor.Play("OpenDoor");
         }
+
+        if (collision.gameObject.CompareTag("Checkpoint"))
+        {
+            if (System.Array.IndexOf(checkpointCollisions, collision.gameObject) > System.Array.IndexOf(checkpointCollisions, recentCollision))
+            {
+                spawnCounter++;
+                recentCollision = checkpointCollisions[spawnCounter];
+            }
+            else
+            {
+
+            }
+        }
     }
 
     void OnCollisionStay(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Log") || collision.gameObject.CompareTag("Checkpoint"))
         {
             isGrounded = true;
             jumpLocked = false;
@@ -173,13 +221,16 @@ public class playerMovement : MonoBehaviour
 
     void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject.tag == "Log")
-        {
-            currentLogTransform = null;
-        }
-
+        
         if (collision.gameObject.CompareTag("Ground"))
         {
+            isGrounded = false;
+            playerAnim.SetBool("isGrounded", false);
+        }
+
+        if (collision.gameObject.CompareTag("Log"))
+        {
+            currentPlatform = null;
             isGrounded = false;
             playerAnim.SetBool("isGrounded", false);
         }
@@ -194,10 +245,10 @@ public class playerMovement : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
 
             
-            transform.position = playerSpawn.position;
+            transform.position = playerSpawns[spawnCounter].position;
 
             
-            transform.rotation = playerSpawn.rotation;
+            transform.rotation = playerSpawns[spawnCounter].rotation;
         }
 
         if (collider.gameObject.tag == "Pool")
@@ -214,11 +265,10 @@ public class playerMovement : MonoBehaviour
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
-
-        transform.position = playerSpawn.position;
-
-
-        transform.rotation = playerSpawn.rotation;
+        spawnCounter = 0;
+        transform.position = playerSpawns[spawnCounter].position;
+        transform.rotation = playerSpawns[spawnCounter].rotation;
+        recentCollision = checkpointCollisions[spawnCounter];
     }
 
     void Begin()

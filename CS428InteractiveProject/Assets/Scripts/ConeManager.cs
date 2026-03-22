@@ -15,6 +15,11 @@ public class ConeManager : MonoBehaviour
 
     public ConeColors colorState;
 
+    void Awake()
+    {
+        InvokeRepeating("ChangeColors", 0f, 3.5f);
+    }
+
     void Start()
     {
         colorState = ConeColors.Blue;
@@ -28,7 +33,7 @@ public class ConeManager : MonoBehaviour
             cone.GetComponent<MeshRenderer>().enabled = false;
             cone.GetComponent<MeshCollider>().enabled = false;
         }
-        InvokeRepeating("ChangeColors", 1f, 3f);
+        
     }
 
     public void ChangeColors()
@@ -39,11 +44,13 @@ public class ConeManager : MonoBehaviour
             {
                 cone.GetComponent<MeshRenderer>().enabled = false;
                 cone.GetComponent<MeshCollider>().enabled = false;
+                
             }
             foreach (GameObject cone in yellowCones)
             {
                 cone.GetComponent<MeshRenderer>().enabled = true;
                 cone.GetComponent<MeshCollider>().enabled = true;
+                cone.GetComponent<AudioSource>().Play();
             }
             colorState = ConeColors.Yellow;        
         }
@@ -53,6 +60,7 @@ public class ConeManager : MonoBehaviour
             {
                 cone.GetComponent<MeshRenderer>().enabled = true;
                 cone.GetComponent<MeshCollider>().enabled = true;
+                cone.GetComponent<AudioSource>().Play();
             }
             foreach (GameObject cone in yellowCones)
             {
