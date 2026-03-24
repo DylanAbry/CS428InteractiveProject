@@ -43,6 +43,7 @@ public class playerMovement : MonoBehaviour
 
     bool inputEnabled = false;
 
+    public bool gameActive;
 
 
     Transform currentPlatform;
@@ -51,6 +52,8 @@ public class playerMovement : MonoBehaviour
 
     Vector3 platformDelta = Vector3.zero;
 
+    public Timer timeScript;
+    public GameObject timePanel;
 
     void Awake()
     {
@@ -92,9 +95,11 @@ public class playerMovement : MonoBehaviour
             inputEnabled = true;
         }
 
+        gameActive = false;
         spawnCounter = 0;
         recentCheckpoint = playerSpawns[spawnCounter];
         recentCollision = checkpointCollisions[spawnCounter];
+        timePanel.SetActive(false);
     }
 
     void Update()
@@ -244,7 +249,7 @@ public class playerMovement : MonoBehaviour
             rb.velocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
 
-            
+            timeScript.timer += 10f;
             transform.position = playerSpawns[spawnCounter].position;
 
             
@@ -260,6 +265,8 @@ public class playerMovement : MonoBehaviour
     private IEnumerator WinSequence()
     {
         winText.SetActive(true);
+        gameActive = false;
+        timeScript.SaveBestTime();
         yield return new WaitForSeconds(3f);
         winText.SetActive(false);
         rb.velocity = Vector3.zero;
@@ -269,6 +276,8 @@ public class playerMovement : MonoBehaviour
         transform.position = playerSpawns[spawnCounter].position;
         transform.rotation = playerSpawns[spawnCounter].rotation;
         recentCollision = checkpointCollisions[spawnCounter];
+        timeScript.timer = 0f;
+        gameActive = true;
     }
 
     void Begin()
@@ -276,6 +285,8 @@ public class playerMovement : MonoBehaviour
         if (!inputEnabled)
         {
             inputEnabled = true;
+            gameActive = true;
+            timePanel.SetActive(true);
             startText.SetActive(false);
             return;
         }

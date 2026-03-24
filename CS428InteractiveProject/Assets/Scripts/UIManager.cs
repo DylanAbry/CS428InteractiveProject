@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class UIManager : MonoBehaviour
 {
     public GameObject pauseScreen;
+    public playerMovement playerScript;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -19,6 +21,7 @@ public class UIManager : MonoBehaviour
         {
             pauseScreen.SetActive(false);
             Time.timeScale = 1f;
+            playerScript.timePanel.SetActive(true);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -26,6 +29,7 @@ public class UIManager : MonoBehaviour
         {
             pauseScreen.SetActive(true);
             Time.timeScale = 0f;
+            playerScript.timePanel.SetActive(false);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
