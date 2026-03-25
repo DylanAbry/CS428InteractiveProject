@@ -6,6 +6,7 @@ using Random = UnityEngine.Random;
 public class ObstacleManager : MonoBehaviour
 {
     public Transform[] pushers;
+    public GameObject[] flames;
     public float pushDistance = 2f;
     public float pushSpeed = 6f;
     public float returnSpeed = 4f;
@@ -21,6 +22,13 @@ public class ObstacleManager : MonoBehaviour
             startLocalPos[i] = pushers[i].localPosition;
 
         InvokeRepeating(nameof(ActivatePushers), 2f, 2f);
+
+        InvokeRepeating(nameof(ActivateFlames), 0f, 4f);
+
+        foreach (GameObject flame in flames)
+        {
+            flame.SetActive(false);
+        }
     }
 
     void ActivatePushers()
@@ -76,6 +84,27 @@ public class ObstacleManager : MonoBehaviour
             }
 
             yield return null;
+        }
+    }
+
+    void ActivateFlames()
+        {
+            StartCoroutine(FlameSequence());
+           
+        }
+    
+    private IEnumerator FlameSequence()
+    {
+        yield return new WaitForSeconds(2f);
+        foreach (GameObject flame in flames)
+        {
+            flame.SetActive(true);
+        }
+        
+        yield return new WaitForSeconds(2f);
+        foreach (GameObject flame in flames)
+        {
+            flame.SetActive(false);
         }
     }
 
