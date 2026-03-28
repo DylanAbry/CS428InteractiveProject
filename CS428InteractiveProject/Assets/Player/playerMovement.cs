@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using Cinemachine;
+using TMPro;
 
 [RequireComponent(typeof(Rigidbody))]
 public class playerMovement : MonoBehaviour
@@ -52,12 +54,18 @@ public class playerMovement : MonoBehaviour
 
     Vector3 platformDelta = Vector3.zero;
 
+    public GameObject pitKey;
     public Timer timeScript;
     public GameObject timePanel;
+    public GameObject recordTimePanel;
+
+    public CinemachineFreeLook freelookCam;
+
 
     void Awake()
     {
         controls = new PlayerControllerActions();
+        freelookCam.enabled = false;
 
         controls.Player.Move.performed += ctx =>
         {
@@ -71,13 +79,10 @@ public class playerMovement : MonoBehaviour
 
         controls.Player.Jump.performed += ctx =>
         {
-            if (SceneManager.GetActiveScene().name == "SenseiScene")
+            if (!inputEnabled)
             {
-                if (!inputEnabled)
-                {
-                    Begin();
-                    return;
-                }
+                Begin();
+                return;
             }
             TryJump();
         };
@@ -90,16 +95,12 @@ public class playerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
 
-        if (SceneManager.GetActiveScene().name != "SenseiScene")
-        {
-            inputEnabled = true;
-        }
-
         gameActive = false;
         spawnCounter = 0;
         recentCheckpoint = playerSpawns[spawnCounter];
         recentCollision = checkpointCollisions[spawnCounter];
         timePanel.SetActive(false);
+        recordTimePanel.SetActive(false);     
     }
 
     void Update()
@@ -260,6 +261,11 @@ public class playerMovement : MonoBehaviour
         {
             StartCoroutine(WinSequence());
         }
+
+        if (collider.gameObject.tag == "DragonInterior")
+        {
+            SceneManager.LoadScene("SenseiScene");
+        }
     }
 
     private IEnumerator WinSequence()
@@ -269,6 +275,35 @@ public class playerMovement : MonoBehaviour
         timeScript.SaveBestTime();
         yield return new WaitForSeconds(3f);
         winText.SetActive(false);
+        pitDoor.Play("Default");
+        pitKey.SetActive(true);
+
+
+        RestartCourse();
+    }
+
+    void Begin()
+    {
+        if (!inputEnabled)
+        {
+            inputEnabled = true;
+            gameActive = true;
+
+            if (SceneManager.GetActiveScene().name == "SenseiScene")
+            {
+                timePanel.SetActive(true);
+                recordTimePanel.SetActive(true);
+            }
+
+            freelookCam.enabled = true;
+            startText.SetActive(false);
+            return;
+        }
+    }
+
+    public void RestartCourse()
+    {
+        if (uiScript.pauseScreen.activeInHierarchy) uiScript.pauseScreen.SetActive(false);
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
@@ -278,17 +313,5 @@ public class playerMovement : MonoBehaviour
         recentCollision = checkpointCollisions[spawnCounter];
         timeScript.timer = 0f;
         gameActive = true;
-    }
-
-    void Begin()
-    {
-        if (!inputEnabled)
-        {
-            inputEnabled = true;
-            gameActive = true;
-            timePanel.SetActive(true);
-            startText.SetActive(false);
-            return;
-        }
     }
 }

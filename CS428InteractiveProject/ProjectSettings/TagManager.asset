@@ -12,6 +12,7 @@ TagManager:
   - Key
   - Pool
   - Checkpoint
+  - DragonInterior
   layers:
   - Default
   - TransparentFX

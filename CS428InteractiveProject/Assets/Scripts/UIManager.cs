@@ -22,6 +22,7 @@ public class UIManager : MonoBehaviour
             pauseScreen.SetActive(false);
             Time.timeScale = 1f;
             playerScript.timePanel.SetActive(true);
+            playerScript.recordTimePanel.SetActive(true);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
@@ -30,6 +31,7 @@ public class UIManager : MonoBehaviour
             pauseScreen.SetActive(true);
             Time.timeScale = 0f;
             playerScript.timePanel.SetActive(false);
+            playerScript.recordTimePanel.SetActive(false);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
         }
