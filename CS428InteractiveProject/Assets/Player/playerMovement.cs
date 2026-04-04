@@ -75,16 +75,69 @@ public class playerMovement : MonoBehaviour
 
         controls.Player.Move.canceled += ctx => moveInput = Vector2.zero;
 
-        if (SceneManager.GetActiveScene().name == "SenseiScene") controls.Player.Pause.performed += ctx => uiScript.PauseManager();
+        if (SceneManager.GetActiveScene().name == "SenseiScene")
+        {
+            controls.Player.Pause.performed += ctx =>
+            {
+                var device = ctx.control.device;
+
+
+                if (device is Gamepad)
+                {
+                    if (IsPaused())
+                        QuitGame();
+                    else
+                        uiScript.PauseManager();
+
+                    return;
+                }
+
+
+                if (device is Keyboard)
+                {
+                    uiScript.PauseManager();
+                    return;
+                }
+            };
+            
+        }
 
         controls.Player.Jump.performed += ctx =>
         {
+            // FIRST: allow title screen start
             if (!inputEnabled)
             {
                 Begin();
                 return;
             }
+
+            // THEN: handle pause logic safely
+            if (uiScript != null && uiScript.pauseScreen != null && uiScript.pauseScreen.activeInHierarchy)
+            {
+                uiScript.PauseManager();
+                return;
+            }
+
+            // NORMAL gameplay
             TryJump();
+        };
+
+        controls.Player.Quit.performed += ctx =>
+        {
+            if (uiScript.pauseScreen.activeInHierarchy || winText.activeInHierarchy)
+            {
+                QuitGame();
+                return;
+            }
+        };
+
+        controls.Player.Reset.performed += ctx =>
+        {
+            if (uiScript.pauseScreen.activeInHierarchy || winText.activeInHierarchy)
+            {
+                RestartCourse();
+                return;
+            }
         };
     }
 
@@ -100,7 +153,8 @@ public class playerMovement : MonoBehaviour
         recentCheckpoint = playerSpawns[spawnCounter];
         recentCollision = checkpointCollisions[spawnCounter];
         timePanel.SetActive(false);
-        recordTimePanel.SetActive(false);     
+        recordTimePanel.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     void Update()
@@ -259,7 +313,7 @@ public class playerMovement : MonoBehaviour
 
         if (collider.gameObject.tag == "Pool")
         {
-            StartCoroutine(WinSequence());
+            WinSequence();
         }
 
         if (collider.gameObject.tag == "DragonInterior")
@@ -268,18 +322,11 @@ public class playerMovement : MonoBehaviour
         }
     }
 
-    private IEnumerator WinSequence()
+    public void WinSequence()
     {
         winText.SetActive(true);
         gameActive = false;
         timeScript.SaveBestTime();
-        yield return new WaitForSeconds(3f);
-        winText.SetActive(false);
-        pitDoor.Play("Default");
-        pitKey.SetActive(true);
-
-
-        RestartCourse();
     }
 
     void Begin()
@@ -304,6 +351,7 @@ public class playerMovement : MonoBehaviour
     public void RestartCourse()
     {
         if (uiScript.pauseScreen.activeInHierarchy) uiScript.pauseScreen.SetActive(false);
+        if (winText.activeInHierarchy) winText.SetActive(false);
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
 
@@ -312,6 +360,22 @@ public class playerMovement : MonoBehaviour
         transform.rotation = playerSpawns[spawnCounter].rotation;
         recentCollision = checkpointCollisions[spawnCounter];
         timeScript.timer = 0f;
+        Time.timeScale = 1f;
+        timePanel.SetActive(true);
+        if (timeScript.bestTime > 0f) recordTimePanel.SetActive(true);
         gameActive = true;
+    }
+
+    public void QuitGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Titlezengarden");
+    }
+
+    bool IsPaused()
+    {
+        return uiScript != null &&
+               uiScript.pauseScreen != null &&
+               uiScript.pauseScreen.activeInHierarchy;
     }
 }
