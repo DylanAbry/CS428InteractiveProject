@@ -79,6 +79,12 @@ public class playerMovement : MonoBehaviour
         {
             controls.Player.Pause.performed += ctx =>
             {
+                if (winText.activeInHierarchy)
+                {
+                    SceneManager.LoadScene("titlezengarden");
+                    return;
+                }
+
                 var device = ctx.control.device;
 
 
@@ -100,6 +106,13 @@ public class playerMovement : MonoBehaviour
                 }
             };
             
+        }
+        else
+        {
+            controls.Player.Pause.performed += ctx =>
+            {
+                Application.Quit();
+            };
         }
 
         controls.Player.Jump.performed += ctx =>
@@ -359,6 +372,8 @@ public class playerMovement : MonoBehaviour
         transform.position = playerSpawns[spawnCounter].position;
         transform.rotation = playerSpawns[spawnCounter].rotation;
         recentCollision = checkpointCollisions[spawnCounter];
+        pitKey.SetActive(true);
+        pitDoor.Play("Default");
         timeScript.timer = 0f;
         Time.timeScale = 1f;
         timePanel.SetActive(true);
