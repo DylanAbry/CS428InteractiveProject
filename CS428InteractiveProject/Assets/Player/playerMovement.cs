@@ -20,12 +20,13 @@ public class playerMovement : MonoBehaviour
     int spawnCounter;
     public GameObject[] checkpointCollisions;
     public GameObject recentCollision;
+    public GameObject quitOffer;
 
     public GameObject winText;
     public GameObject startText;
 
     [Header("Movement")]
-    public float moveSpeed = 7f;
+    public float moveSpeed = 3f;
     public float jumpForce = 25f;
 
     [Header("Ground Check")]
@@ -152,6 +153,8 @@ public class playerMovement : MonoBehaviour
                 return;
             }
         };
+
+       
     }
 
     void OnEnable() => controls.Enable();
@@ -193,8 +196,12 @@ public class playerMovement : MonoBehaviour
             platformDelta = Vector3.zero;
         }
 
+        float speedPercent = movement.magnitude / moveSpeed;
+        playerAnim.SetFloat("Speed", speedPercent, 0.1f, Time.deltaTime);
+        playerAnim.SetFloat("yVelocity", rb.velocity.y);
+        playerAnim.SetBool("isGrounded", isGrounded);
+
         HandleMovement();
-        HandleAnimation();
     }
 
     void FixedUpdate()
@@ -241,11 +248,6 @@ public class playerMovement : MonoBehaviour
                 10f * Time.deltaTime
             );
         }
-    }
-
-    void HandleAnimation()
-    {
-        playerAnim.SetBool("isRunning", moveInput.magnitude > 0.1f);
     }
 
     void OnApplicationFocus(bool focus)
@@ -354,6 +356,10 @@ public class playerMovement : MonoBehaviour
                 timePanel.SetActive(true);
                 recordTimePanel.SetActive(true);
             }
+            else
+            {
+                quitOffer.SetActive(true);
+            }
 
             freelookCam.enabled = true;
             startText.SetActive(false);
@@ -374,10 +380,22 @@ public class playerMovement : MonoBehaviour
         recentCollision = checkpointCollisions[spawnCounter];
         pitKey.SetActive(true);
         pitDoor.Play("Default");
+        if (timeScript.bestTime > 0f)
+        {
+            recordTimePanel.SetActive(true);
+            if (timeScript.timer < timeScript.bestTime)
+            {
+                timeScript.bestTime = PlayerPrefs.GetFloat("BestTime", 0f);
+                int minutes = Mathf.FloorToInt(timeScript.bestTime / 60f);
+                int seconds = Mathf.FloorToInt(timeScript.bestTime % 60f);
+
+                timeScript.recordTimeDisplay.text = "RECORD: " + string.Format("{0:00}:{1:00}", minutes, seconds);     
+            }
+        }
         timeScript.timer = 0f;
         Time.timeScale = 1f;
         timePanel.SetActive(true);
-        if (timeScript.bestTime > 0f) recordTimePanel.SetActive(true);
+        
         gameActive = true;
     }
 
