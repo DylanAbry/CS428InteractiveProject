@@ -1,0 +1,32 @@
+---
+title: "Beta Release Notes"
+output: html_document
+date: "2026-04-10"
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Quick Review
+Our first pillar was animation, and it is integrated as
+  * The main player character; it has a jump, idle, and run animation
+  * The throwing/ninja star obstacle that is swinging left to right
+  * The totem bar obstacle that spins
+
+# Secondary Pillar 
+Our second pillar was physics, and it is integrated as
+  * The rigidbody on the player; so it can interact with the physics of the environment 
+  * A collider for almost all of the objects in the obstacles; 
+  * A physics material that is applied to some objects; such as a bouncy physics material with the first obstacle, the pushers, allowing the player to be knocked off the edge easier
+  * The ball pitt; each ball pre-fab as a force and launch factor, so when the player collides with it it runs off to the side, mimicking a ball pit.
+
+# New Features 
+In this release, we added a smoother transition between the animation states using a blend tree.
+  * We also added Particle systems
+  * We used in the fire that the dragon breathes out
+  * We used it in the steam that comes out of the dragon’s nose 
+  * We used an ash particle system in the environment as a whole, it is adding the volcanic/fiery theme
+  * There is a smaller particle system for the water in the pool
+
+# Known Issues 
+There is a small issue with the camera movement; moving left/right/back there seems to be a jitter.
