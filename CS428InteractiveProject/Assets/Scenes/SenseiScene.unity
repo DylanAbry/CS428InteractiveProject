@@ -85103,8 +85103,8 @@ MonoBehaviour:
   m_UpdateMethod: 2
   m_BlendUpdateMethod: 1
   m_DefaultBlend:
-    m_Style: 1
-    m_Time: 2
+    m_Style: 2
+    m_Time: 4
     m_CustomCurve:
       serializedVersion: 2
       m_Curve: []
@@ -164573,7 +164573,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -2.098755, y: -6.977112}
+  m_AnchoredPosition: {x: -2.098755, y: -6.9771423}
   m_SizeDelta: {x: 66.493, y: 58.613}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1400289125
@@ -177729,7 +177729,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1640772902}
-  m_LocalRotation: {x: -0.38376078, y: 0.000000015888858, z: 0.0000000066031025, w: 0.9234326}
+  m_LocalRotation: {x: -0.38376078, y: 0.000000015888935, z: 0.0000000066031345, w: 0.9234326}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -178524,7 +178524,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1723438846}
-  m_LocalRotation: {x: -0.36223784, y: 1e-45, z: -0, w: 0.9320857}
+  m_LocalRotation: {x: -0.36223784, y: -1e-45, z: -1e-45, w: 0.9320857}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -229926,9 +229926,9 @@ MonoBehaviour:
   m_YAxis:
     Value: 0.5
     m_SpeedMode: 0
-    m_MaxSpeed: 1
-    m_AccelTime: 0.2
-    m_DecelTime: 0.1
+    m_MaxSpeed: 0.4
+    m_AccelTime: 0.4
+    m_DecelTime: 0.3
     m_InputAxisName: Mouse Y
     m_InputAxisValue: 0
     m_InvertInput: 1
@@ -229950,9 +229950,9 @@ MonoBehaviour:
   m_XAxis:
     Value: 0
     m_SpeedMode: 0
-    m_MaxSpeed: 80
-    m_AccelTime: 0.1
-    m_DecelTime: 0.1
+    m_MaxSpeed: 140
+    m_AccelTime: 0
+    m_DecelTime: 0
     m_InputAxisName: Mouse X
     m_InputAxisValue: 0
     m_InvertInput: 0
@@ -229976,10 +229976,10 @@ MonoBehaviour:
     m_LegacyHeadingDefinition: -1
     m_LegacyVelocityFilterStrength: -1
   m_BindingMode: 4
-  m_SplineCurvature: 0.2
+  m_SplineCurvature: 1
   m_Orbits:
-  - m_Height: 3.29
-    m_Radius: 2
+  - m_Height: 2.97
+    m_Radius: 1.75
   - m_Height: -2.5
     m_Radius: 3
   - m_Height: 0.4
@@ -241282,7 +241282,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2135377655}
-  m_LocalRotation: {x: -0.34042525, y: 0.000000022449829, z: 0.000000008127959, w: 0.9402716}
+  m_LocalRotation: {x: -0.34042525, y: -0.0000000228801, z: -0.000000008283737, w: 0.9402716}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -244243,6 +244243,7 @@ MonoBehaviour:
   - {fileID: 271420939}
   - {fileID: 1820657922}
   recentCollision: {fileID: 0}
+  quitOffer: {fileID: 0}
   winText: {fileID: 1377892644}
   startText: {fileID: 1820060997}
   moveSpeed: 3
