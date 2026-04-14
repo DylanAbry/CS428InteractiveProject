@@ -62,6 +62,9 @@ public class playerMovement : MonoBehaviour
 
     public CinemachineFreeLook freelookCam;
 
+    public AudioSource highDiveSplash;
+    public AudioSource senseiWin;
+
 
     void Awake()
     {
@@ -264,6 +267,8 @@ public class playerMovement : MonoBehaviour
             lastPlatformRot = currentPlatform.rotation;
         }
 
+        if (collision.gameObject.CompareTag("Knocka")) collision.gameObject.GetComponent<AudioSource>().Play();
+
         if (collision.gameObject.tag == "Key")
         {
             collision.gameObject.SetActive(false);
@@ -328,6 +333,7 @@ public class playerMovement : MonoBehaviour
 
         if (collider.gameObject.tag == "Pool")
         {
+            highDiveSplash.Play();
             WinSequence();
         }
 
@@ -339,6 +345,7 @@ public class playerMovement : MonoBehaviour
 
     public void WinSequence()
     {
+        senseiWin.Play();
         winText.SetActive(true);
         gameActive = false;
         timeScript.SaveBestTime();

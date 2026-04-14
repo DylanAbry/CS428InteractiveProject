@@ -5,13 +5,15 @@ using UnityEngine;
 public class BallKick : MonoBehaviour
 {
     public float kickForce = 6f;   
-    public float liftForce = 1.2f; 
+    public float liftForce = 1.2f;
+    public AudioSource bounce;
 
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.CompareTag("Player"))
         {
             Rigidbody rb = GetComponent<Rigidbody>();
+            bounce.Play();
 
             Vector3 dir = (transform.position - col.transform.position).normalized;
             dir.y = 0;
