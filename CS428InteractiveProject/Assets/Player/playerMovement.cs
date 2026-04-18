@@ -65,6 +65,10 @@ public class playerMovement : MonoBehaviour
     public AudioSource highDiveSplash;
     public AudioSource senseiWin;
 
+    public AudioSource zenGarden;
+    public AudioSource introTheme;
+    public AudioSource mainTheme;
+    public AudioSource correctly;
 
     void Awake()
     {
@@ -83,9 +87,12 @@ public class playerMovement : MonoBehaviour
         {
             controls.Player.Pause.performed += ctx =>
             {
+                if (startText.activeInHierarchy) return;
+
                 if (winText.activeInHierarchy)
                 {
                     SceneManager.LoadScene("titlezengarden");
+                    Cursor.lockState = CursorLockMode.Locked;
                     return;
                 }
 
@@ -272,6 +279,7 @@ public class playerMovement : MonoBehaviour
         if (collision.gameObject.tag == "Key")
         {
             collision.gameObject.SetActive(false);
+            correctly.Play();
             pitDoor.Play("OpenDoor");
         }
 
@@ -279,7 +287,7 @@ public class playerMovement : MonoBehaviour
         {
             if (System.Array.IndexOf(checkpointCollisions, collision.gameObject) > System.Array.IndexOf(checkpointCollisions, recentCollision))
             {
-                spawnCounter++;
+                spawnCounter = System.Array.IndexOf(checkpointCollisions, collision.gameObject);
                 recentCollision = checkpointCollisions[spawnCounter];
             }
             else
@@ -345,6 +353,7 @@ public class playerMovement : MonoBehaviour
 
     public void WinSequence()
     {
+        if (mainTheme.isPlaying) mainTheme.Stop();
         senseiWin.Play();
         winText.SetActive(true);
         gameActive = false;
@@ -366,6 +375,8 @@ public class playerMovement : MonoBehaviour
             else
             {
                 quitOffer.SetActive(true);
+                if (introTheme.isPlaying) introTheme.Stop();
+                zenGarden.Play();
             }
 
             freelookCam.enabled = true;
@@ -399,10 +410,11 @@ public class playerMovement : MonoBehaviour
                 timeScript.recordTimeDisplay.text = "RECORD: " + string.Format("{0:00}:{1:00}", minutes, seconds);     
             }
         }
+        Cursor.lockState = CursorLockMode.Locked;
         timeScript.timer = 0f;
         Time.timeScale = 1f;
         timePanel.SetActive(true);
-        
+        mainTheme.Play();
         gameActive = true;
     }
 
@@ -410,6 +422,7 @@ public class playerMovement : MonoBehaviour
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene("Titlezengarden");
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     bool IsPaused()

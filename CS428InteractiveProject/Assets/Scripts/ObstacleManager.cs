@@ -99,12 +99,14 @@ public class ObstacleManager : MonoBehaviour
         foreach (GameObject flame in flames)
         {
             flame.SetActive(true);
+            flame.GetComponent<AudioSource>().Play();
         }
         
         yield return new WaitForSeconds(2f);
         foreach (GameObject flame in flames)
         {
             flame.SetActive(false);
+            
         }
     }
 
