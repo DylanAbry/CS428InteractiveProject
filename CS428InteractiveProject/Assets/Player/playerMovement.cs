@@ -70,6 +70,9 @@ public class playerMovement : MonoBehaviour
     public AudioSource mainTheme;
     public AudioSource correctly;
 
+    public AudioSource senseiJump;
+    public AudioSource senseiDeath;
+
     void Awake()
     {
         controls = new PlayerControllerActions();
@@ -232,6 +235,7 @@ public class playerMovement : MonoBehaviour
         jumpLocked = true;
 
         playerAnim.SetTrigger("Jump");
+        senseiJump.Play();
         rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
     }
 
@@ -330,6 +334,7 @@ public class playerMovement : MonoBehaviour
         {
             
             rb.velocity = Vector3.zero;
+            senseiDeath.Play();
             rb.angularVelocity = Vector3.zero;
 
             timeScript.timer += 10f;
@@ -342,6 +347,7 @@ public class playerMovement : MonoBehaviour
         if (collider.gameObject.tag == "Pool")
         {
             highDiveSplash.Play();
+            
             WinSequence();
         }
 
