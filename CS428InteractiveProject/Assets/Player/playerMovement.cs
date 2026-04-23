@@ -73,6 +73,8 @@ public class playerMovement : MonoBehaviour
     public AudioSource senseiJump;
     public AudioSource senseiDeath;
 
+    public GameObject creditsPage;
+
     void Awake()
     {
         controls = new PlayerControllerActions();
@@ -131,6 +133,13 @@ public class playerMovement : MonoBehaviour
 
         controls.Player.Jump.performed += ctx =>
         {
+            if (SceneManager.GetActiveScene().name == "titlezengarden")
+            {
+                if (creditsPage.activeInHierarchy)
+                {
+                    return;
+                }
+            }
             // FIRST: allow title screen start
             if (!inputEnabled)
             {
@@ -151,18 +160,52 @@ public class playerMovement : MonoBehaviour
 
         controls.Player.Quit.performed += ctx =>
         {
-            if (uiScript.pauseScreen.activeInHierarchy || winText.activeInHierarchy)
+            if (SceneManager.GetActiveScene().name == "SenseiScene")
             {
-                QuitGame();
+                if (uiScript.pauseScreen.activeInHierarchy || winText.activeInHierarchy)
+                {
+                    QuitGame();
+                    return;
+                }
+            }
+            else if (SceneManager.GetActiveScene().name == "titlezengarden")
+            {
+                if (creditsPage.activeInHierarchy)
+                {
+                    creditsPage.SetActive(false);
+                    startText.SetActive(true);
+                }
+            }
+            else
+            {
                 return;
             }
         };
 
         controls.Player.Reset.performed += ctx =>
         {
-            if (uiScript.pauseScreen.activeInHierarchy || winText.activeInHierarchy)
+            if (SceneManager.GetActiveScene().name == "SenseiScene")
             {
-                RestartCourse();
+                if (uiScript.pauseScreen.activeInHierarchy || winText.activeInHierarchy)
+                {
+                    RestartCourse();
+                    return;
+                }
+            } 
+            else if (SceneManager.GetActiveScene().name == "titlezengarden")
+            {
+                if (!inputEnabled)
+                {
+                    creditsPage.SetActive(true);
+                    startText.SetActive(false);
+                }
+                else
+                {
+                    return;
+                }
+            }
+            else
+            {
                 return;
             }
         };
@@ -348,12 +391,23 @@ public class playerMovement : MonoBehaviour
         {
             highDiveSplash.Play();
             
-            WinSequence();
+            if (SceneManager.GetActiveScene().name == "SenseiScene")
+            {
+                WinSequence();
+            }    
         }
 
         if (collider.gameObject.tag == "DragonInterior")
         {
             SceneManager.LoadScene("SenseiScene");
+        }
+    }
+
+    void OnTriggerExit(Collider collider)
+    {
+        if (collider.gameObject.tag == "Pool")
+        {
+            highDiveSplash.Play();
         }
     }
 

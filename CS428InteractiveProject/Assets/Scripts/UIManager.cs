@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
             playerScript.recordTimePanel.SetActive(true);
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
+            playerScript.mainTheme.Play();
         }
         else
         {
@@ -34,6 +35,7 @@ public class UIManager : MonoBehaviour
             playerScript.recordTimePanel.SetActive(false);
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
+            playerScript.mainTheme.Pause();
         }
     }
 }
