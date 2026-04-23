@@ -14,7 +14,7 @@ Material:
   - EFFECT_BUMP
   - EFFECT_EXTRA_TEX
   - EFFECT_SUBSURFACE
-  - _WINDQUALITY_BEST
+  - _WINDQUALITY_FASTEST
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
