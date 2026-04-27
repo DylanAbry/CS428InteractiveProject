@@ -1,0 +1,123 @@
+---
+title: "Assignment 6: Feature Complete Release Notes & User Study Results"
+date: "April 26, 2026"
+output: github_document
+---
+
+## Feature Complete Release Notes
+
+### Changes Since Beta Build
+
+* **UI entirely upgraded and implemented:** This includes upgrades for the Instructions, Time, Pause, and Win panels, as well as a newly implemented title design. We also added a credits panel that can be pulled up in the title scene before starting the game.
+
+* **Audio entirely implemented:** The game music, sound effects of obstacles/interactable objects, and the voicing of Sensei are all in the game now and function as expected.
+
+* **Zen Garden Features Added: Our zen garden no longer looks empty! We added a small body of water, trees, bushes, rocks, lanterns and statues around the garden to provide a peaceful environment for the player to explore before they’re ready to attempt the obstacle course.
+
+* **Polished Gameplay Logic:** Some holes in the gameplay logic were patched up, such as the player skipping checkpoints, pulling up the credits panel and closing the game, and pausing the screen to either continue, reset or leave the game.
+
+* **Game Memory Optimized:** The game’s total memory when we built it was almost 2.7 GB!! It was noticed from the Build Report that this stemmed from the textures in the game, primarily the usage of 4K textures that caused the memory to skyrocket. After changing almost all of the game’s textures to 1K, we were able to condense the memory of the game to about 0.5 GB.
+
+
+---
+
+## User Study Results
+
+### Methodology
+Tests were conducted via distribution of a ZIP build. Participants played on personal laptops with a required resolution of **1920x1080** to maintain UI integrity. Feedback was gathered through direct observation, silent note-taking, and post-play interviews.
+
+### Peer Testing Data
+
+
+### Peer 1: Yoshi Aligina 
+
+**Observations:**
+* [At the initial stairs that lead first pushers obstacle] “I’m not able to climb the stairs without jumping”
+* [At the second obstacle, swinging shurikens] “And when I jump through the swinging shurikens, I just go through them rather than falling off.”
+
+**Silent Note-Taking:**
+When playing the game the User was able to successfully complete a full run-through of the game. 
+
+**Post-Play Interview:** With the color-switching cones obstacles, she would like an indication of how close the cones are to switching. It was a challenge to complete this obstacles as the only indication that the cones are going to change is the 4 count beats.
+
+---
+
+### Peer 2: Michael Babboni 
+
+**Subject Feedback:** **Observation:**
+During the hanging shurikens section, there is no indication that the pole is spinning. The player seems to have difficulties walking up stairs. I noticed that the platforms change with the tikking, but there is no indication of where the next platform is.
+
+**Silent Note Taking:**
+They failed at the alternating platforms section.
+
+**Post-Play Interview:**
+* **What was the most confusing or frustrating part of the experience?**
+It felt like I was constantly fighting the camera.
+* **On a scale of 1-10, how intuitive were the controls?**
+7, at the beginning area, I pressed escape to see if there was a menu and ended up closing the game entirely. Also, it felt like I was constantly moving diagonally, even though I was actually moving straight.
+* **Did you notice any visual glitches or lag? If so, when?**
+No. 
+
+---
+
+### Peer 3: Ryan Chan 
+
+**Subject Feedback:** **Observation:**
+The first section was difficult as there seemed to be no indication of which glove would punch when. The player was confused by the hanging shurikens section, as they were struggling with the spinning platform (there was no visual indicator). Stairs were not difficult for the player. The changing platforms were the most difficult to navigate, as there is no indication of where the platform will be when they switch. 
+
+**Silent Note Taking:**
+The player could not complete the alternating platforms section. 
+
+**Post-Play Interview:**
+* **What was the most confusing or frustrating part of the experience?**
+The camera was very difficult to control and didn’t properly show the player a lot of the time. 
+* **On a scale of 1-10, how intuitive were the controls?**
+9, most controls are explicitly shown at the beginning of the game. Camera movement was not fully explained but it is easy to figure out. 
+* **Did you notice any visual glitches or lag? If so, when?**
+It felt like the character was always moving diagonally instead of straight. 
+
+---
+
+### Peer 4: Anushka Sikdar
+
+**Subject Feedback:** **Observation:**
+The player found the camera mechanics frustrating and also got a little dizzy from the rugged movements and shakiness. The movement of the character is a little bit finicky and doesn’t always move the way the player expected it to. Needs more indications at some obstacles; maybe a middle stage for the punches/flames/alternating platforms to give the user a basis for their next move, instead of just guessing. Enjoyed the sound effects and themed level music.
+
+**Silent Note Taking:**
+The player failed at a couple of the jumps and slid off the rotating log a couple of times. The player didn’t realize at first that the ball pit contained a key to unlock the door. The player struggled to walk up some of the stairs.
+
+**Post-Play Interview:**
+* **What was the most confusing or frustrating part of the experience?**
+The camera has to be the most frustrating part of the experience. As this is an obby, being able to fully control your character is really important.
+* **On a scale of 1-10, how intuitive were the controls?**
+9. Pretty standard WASD controls (for keyboard), and it was really helpful to put the instructions in a menu during the start of the game, but the camera locking is frustrating to work around.
+* **Did you notice any visual glitches or lag? If so, when?**
+I did not notice any visual glitches or lag.
+
+---
+
+### Peer 5: Oskar Iwaniuk
+
+**Subject Feedback:** **Observation:**
+This user had positive feedback when playing the game. He said “It is a fun parkour game. The controls and objectives are very simple.”
+Another observation they noted was that the camera’s angle was unstable and glitchy while trying to move. They said it caused them to go off the side by accident.
+
+**Silent Note-Taking:**
+The user successfully completed the runthrough of the whole game, and each level was an achievable challenge.
+
+**Post-Play Interview:**
+Overall, the user really liked the game and the project follows the assignment objectives.
+He mentioned that he has a relatively small laptop with older hardware, and yet he was able to play this complex game. He noted that other games “lagged forever and ever”.
+
+---
+
+## Action Items for Assignment 7
+
+1. **Clean up color-switching cone obstacle.** This includes providing a clear outline to the player for the time they have been the cones turning on/off and showing where the disabled cones are so the player knows where they can move to next to advance.
+
+2. **Clean up rolling bridge obstacle.** There needs to be an indication that the bridge is rotating, so something like a sign can be added onto the bridge so its movement would inform the player of the rotation.
+
+3. **Clean up the UI.** This includes ensuring that the player is informed of all controls for the game accurately
+
+4. **Clean up the camera jitter.** The camera is still jittery when the character moves any direction but forwards, so hopefully we can work on making this smoother
+
