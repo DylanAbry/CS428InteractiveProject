@@ -231,6 +231,21 @@ public class playerMovement : MonoBehaviour
 
     void Update()
     {
+        
+
+        float speedPercent = movement.magnitude / moveSpeed;
+        playerAnim.SetFloat("Speed", speedPercent, 0.1f, Time.deltaTime);
+        playerAnim.SetFloat("yVelocity", rb.velocity.y);
+        playerAnim.SetBool("isGrounded", isGrounded);
+
+        //HandleMovement();
+    }
+
+    void FixedUpdate()
+    {
+        HandleMovement();
+        rb.angularVelocity = Vector3.zero;
+
         if (currentPlatform != null)
         {
             Vector3 deltaPos = currentPlatform.position - lastPlatformPos;
@@ -251,18 +266,6 @@ public class playerMovement : MonoBehaviour
         {
             platformDelta = Vector3.zero;
         }
-
-        float speedPercent = movement.magnitude / moveSpeed;
-        playerAnim.SetFloat("Speed", speedPercent, 0.1f, Time.deltaTime);
-        playerAnim.SetFloat("yVelocity", rb.velocity.y);
-        playerAnim.SetBool("isGrounded", isGrounded);
-
-        HandleMovement();
-    }
-
-    void FixedUpdate()
-    {
-        rb.angularVelocity = Vector3.zero;
 
         Vector3 finalMove = movement + platformDelta / Time.fixedDeltaTime;
 
@@ -299,11 +302,8 @@ public class playerMovement : MonoBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(movement);
 
-            transform.rotation = Quaternion.Slerp(
-                transform.rotation,
-                targetRotation,
-                10f * Time.deltaTime
-            );
+            //transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.fixedDeltaTime);
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, 10f * Time.fixedDeltaTime));
         }
     }
 

@@ -7,6 +7,11 @@ public class ConeManager : MonoBehaviour
     public GameObject[] blueCones;
     public GameObject[] yellowCones;
 
+    public Material translucentBlue;
+    public Material smoothBlue;
+    public Material translucentYellow;
+    public Material smoothYellow;
+
     public enum ConeColors
     {
         Blue,
@@ -25,12 +30,12 @@ public class ConeManager : MonoBehaviour
         colorState = ConeColors.Blue;
         foreach (GameObject cone in blueCones)
         {
-            cone.GetComponent<MeshRenderer>().enabled = true;
+            cone.GetComponent<MeshRenderer>().material = smoothBlue;
             cone.GetComponent<MeshCollider>().enabled = true;
         }
         foreach (GameObject cone in yellowCones)
         {
-            cone.GetComponent<MeshRenderer>().enabled = false;
+            cone.GetComponent<MeshRenderer>().material = translucentYellow;
             cone.GetComponent<MeshCollider>().enabled = false;
         }
         
@@ -42,13 +47,13 @@ public class ConeManager : MonoBehaviour
         {
             foreach (GameObject cone in blueCones)
             {
-                cone.GetComponent<MeshRenderer>().enabled = false;
+                cone.GetComponent<MeshRenderer>().material = translucentBlue;
                 cone.GetComponent<MeshCollider>().enabled = false;
                 
             }
             foreach (GameObject cone in yellowCones)
             {
-                cone.GetComponent<MeshRenderer>().enabled = true;
+                cone.GetComponent<MeshRenderer>().material = smoothYellow;
                 cone.GetComponent<MeshCollider>().enabled = true;
                 cone.GetComponent<AudioSource>().Play();
             }
@@ -58,13 +63,13 @@ public class ConeManager : MonoBehaviour
         {
             foreach (GameObject cone in blueCones)
             {
-                cone.GetComponent<MeshRenderer>().enabled = true;
+                cone.GetComponent<MeshRenderer>().material = smoothBlue;
                 cone.GetComponent<MeshCollider>().enabled = true;
                 cone.GetComponent<AudioSource>().Play();
             }
             foreach (GameObject cone in yellowCones)
             {
-                cone.GetComponent<MeshRenderer>().enabled = false;
+                cone.GetComponent<MeshRenderer>().material = translucentYellow;
                 cone.GetComponent<MeshCollider>().enabled = false;
             }
             colorState = ConeColors.Blue;
