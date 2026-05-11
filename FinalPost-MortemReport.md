@@ -1,14 +1,10 @@
----
-title: "Engineering Retrospective"
-output: html_document
-date: "2026-05-11"
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+Assignment 7
+Post-Mortem Report
+5/11/26
 
-#Brief overview of our two pillars and achievement
+
+# Brief overview of our two pillars and achievement
 ### Our project focused on two main technical pillars: animation and physics.
 * Our first pillar was animation, which helped make the gameplay feel more interactive and polished. We implemented animations for the main player character, including idle, running, and jumping states. We also animated environmental obstacles, such as the swinging ninja star obstacle and the rotating totem bar obstacle, to create more dynamic gameplay and improve player immersion.
 * Our second pillar was physics, which was essential for creating realistic player and environment interactions. We used rigidbody physics on the player to allow natural movement and collisions within the environment. Colliders were added to nearly all obstacles to ensure proper interaction and gameplay mechanics. We also implemented physics materials, such as bouncy surfaces on the pusher obstacles, which made it easier for players to be knocked off the map. Additionally, the ball pit obstacle used force and launch factors on each ball prefab so that collisions would scatter the balls realistically, mimicking the behavior of an actual ball pit.
